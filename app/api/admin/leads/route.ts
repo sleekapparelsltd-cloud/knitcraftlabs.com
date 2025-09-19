@@ -6,7 +6,11 @@ import { adminMiddleware } from '../middleware'
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
+export async function GET(req: NextRequest) {
+  const middlewareResponse = await adminMiddleware(req)
+  if (middlewareResponse.status !== 200) {
     return middlewareResponse
+  }
   try {
     const leads = await prisma.lead.findMany({
       include: {
