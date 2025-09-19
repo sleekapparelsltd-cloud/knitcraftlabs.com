@@ -39,6 +39,7 @@ const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           name: user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user.email,
+          role: user.role,
         }
       }
     })
@@ -53,12 +54,14 @@ const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
+        token.role = user.role
       }
       return token
     },
     async session({ session, token }) {
       if (token && session.user) {
         (session.user as any).id = token.id as string
+        (session.user as any).role = token.role as string
       }
       return session
     }

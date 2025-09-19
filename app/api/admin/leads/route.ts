@@ -1,10 +1,12 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { adminMiddleware } from '../middleware'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
+    return middlewareResponse
   try {
     const leads = await prisma.lead.findMany({
       include: {
@@ -27,6 +29,10 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const middlewareResponse = await adminMiddleware(request)
+  if (middlewareResponse.status !== 200) {
+    return middlewareResponse
+  }
   try {
     const data = await request.json()
 
